@@ -1,9 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { Button, ButtonGroup, Input } from "@nextui-org/react";
-import { TbSearch, TbSun, TbMoon, TbWaveSquare } from "react-icons/tb";
+import { TbSearch, TbSun, TbMoon, TbWaveSquare, TbHeart } from "react-icons/tb";
 import ThemeChanger from "./ThemeChanger";
 import { useRouter } from "next/navigation";
+import Picks from "./Picks";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export default function App() {
     const router = useRouter()
@@ -51,6 +54,9 @@ export default function App() {
         </div>
         <div>
           <ThemeChanger />
+        </div>
+        <div >
+          <Picks picks={useSelector((state: RootState)=> state.picks)} />
         </div>
       </section>
     </nav>

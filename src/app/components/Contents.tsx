@@ -20,6 +20,9 @@ import { useSearchParams } from "next/navigation";
 import moment from "moment";
 import Player from "./Player";
 import DownloadBtn from "./DownloadBtn";
+import { useDispatch } from "react-redux";
+import { PicksType, loadPicks } from "../redux/features/picksSlice";
+import axios from "axios";
 
 interface ContentItem {
   id: {
@@ -48,6 +51,7 @@ export interface PlayingItemType {
   expiresInSeconds: string;
   publishDate: string;
   ownerChannelName: string;
+  vid : string;
 }
 
 
@@ -58,31 +62,47 @@ const Contents = () => {
   const queries = useSearchParams();
   const [query, setQuery] = useState<string>( queries.get("q") || "new music" );
   const [currentPlaying, setCurrentPlaying] = useState<
-    PlayingItemType | undefined
+    PlayingItemType
   >();
-
+  const API_KEY =  process.env.YT_API_KEY as string;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const fetchContents = async () => {
-    const data = await fetch(
-      `http://localhost:3001/api?q=${query}&max=8`
-      //   `https://apibeatwave.vercel.app/api?q=${query}&max=8`
-    );
-    const jsonData = await data.json();
-    console.log(jsonData);
-    setContents(jsonData.items);
-    setLoading(false);
+    try {
+      console.log(`https://apibeatwave.vercel.app/api?q=${query}&max=8&apikey=${API_KEY}`);
+      const data = await axios.get(
+        `https://apibeatwave.vercel.app/api?q=${query}&max=8&apikey=${API_KEY}`);
+      if (!data.status) {
+        throw new Error('Failed to fetch contents');
+      }
+      const jsonData = data.data;
+      console.log(jsonData);
+      setContents(jsonData.items);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching contents:', error);
+      // Handle error, such as displaying a message to the user
+      setLoading(false);
+    }
   };
+  
   const fetchMusic = async (vid: string) => {
-    console.log("fetching...")
-    const data = await fetch(
-      `http://localhost:3001/api/${vid}`
-      // `https://apibeatwave.vercel.app/api/${vid}`
-    );
-    const jsonData = await data.json();
-    console.log(jsonData);
-    setCurrentPlaying(jsonData);
+    try {
+      console.log("fetching...");
+      const data = await axios.get(
+        `https://apibeatwave.vercel.app/api/${vid}`);
+      if (!data.status) {
+        throw new Error('Failed to fetch music');
+      }
+      const jsonData = data.data;
+      const jsonDataWithid = { ...jsonData, vid };
+      setCurrentPlaying(jsonDataWithid);
+      console.log(jsonDataWithid);
+    } catch (error) {
+      console.error('Error fetching music:', error);
+      // Handle error, such as displaying a message to the user
+    }
   };
+  
 
 
   useEffect(() => {
@@ -94,6 +114,18 @@ const Contents = () => {
   useEffect(() => {
     fetchContents();
   }, [query]);
+
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (localStorage.getItem("Picks") !== null) {
+      const data: PicksType | null = JSON.parse(localStorage.getItem("Picks")!);
+      if (data) {
+        dispatch(loadPicks(data));
+      }
+    }
+  }, [dispatch]);
 
   const handlePlay = (vid: string) => {
     fetchMusic(vid);
@@ -147,7 +179,7 @@ const Contents = () => {
                       </Button>
                     
 
-                      <DownloadBtn vid={card?.id?.videoId} />
+                      <DownloadBtn v={{vid : card?.id?.videoId , title : card.snippet.title , thumbnail: card.snippet.thumbnails.high.url}} />
                       
 
                       </div>
@@ -178,7 +210,7 @@ const Contents = () => {
               <ModalContent>
                 {(onClose) => (
                   <>
-                    <Player current={currentPlaying} />
+                    <Player current={currentPlaying}  />
                   </>
                 )}
               </ModalContent>

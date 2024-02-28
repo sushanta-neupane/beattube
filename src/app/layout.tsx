@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { StoreProvider } from "./redux/StoreProvider";
 
 export const metadata: Metadata = {
   title: "beatTube",
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body >{children}</body>
+
+      <body >
+      <StoreProvider>
+        {children}
+      </StoreProvider>
+        </body>
     </html>
   );
 }
