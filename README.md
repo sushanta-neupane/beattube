@@ -28,7 +28,7 @@ BeatTube is a multimedia platform designed for streaming and downloading videos 
 
 ## Get Started
 
-Visit [BeatTube](https://www.beattube.vercel.app) to start exploring a world of video and audio entertainment.
+Visit [BeatTube](https://beattube.vercel.app/) to start exploring a world of video and audio entertainment.
 
 
 
