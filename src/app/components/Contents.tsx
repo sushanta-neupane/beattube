@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import {
   Card,
   CardHeader,
@@ -137,6 +137,7 @@ const Contents = () => {
 
   return (
     <>
+ 
       {loading ? (
         <LoadSpinner label="Fetching..." />
       ) : (
@@ -218,6 +219,7 @@ const Contents = () => {
           </div>
         </>
       )}
+
     </>
   );
 };
