@@ -49,7 +49,7 @@ const Picks = ({ picks }: PropsType) => {
 
               <div className="flex justify-between mb-4 w-full">
                 <div>
-                  <Player/>
+                  Play Picks
                 </div>
                 <div>
                   <Button variant="light" onClick={handleClearAll}>Clear All</Button>
