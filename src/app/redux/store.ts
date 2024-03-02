@@ -1,10 +1,12 @@
 "use client"
 import { configureStore,combineReducers } from "@reduxjs/toolkit";
 import picksReducer from "./features/picksSlice";
+import playerReducer from "./features/playerSlice";
 
 const rootReducers = combineReducers({
     
-        picks : picksReducer
+        picks : picksReducer,
+        player: playerReducer,
     
 })
 

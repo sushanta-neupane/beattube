@@ -26,6 +26,9 @@ export const picksSlice = createSlice({
     removePicks: (state, action: PayloadAction<string>) => {
       state.videos = state.videos.filter((video) => video.vid !== action.payload);
     },
+    removeAllPicks: (state, action: PayloadAction<string>) => {
+      return  initialState;
+    },
     togglePicks: (state, action: PayloadAction<VideoType>) => {
       const existingVideoIndex = state.videos.findIndex((video) => video.vid === action.payload.vid);
       if (existingVideoIndex !== -1) {
@@ -40,5 +43,5 @@ export const picksSlice = createSlice({
   },
 });
 
-export const { addPicks, removePicks, togglePicks ,loadPicks } = picksSlice.actions;
+export const { addPicks, removePicks, togglePicks ,loadPicks,removeAllPicks } = picksSlice.actions;
 export default picksSlice.reducer;

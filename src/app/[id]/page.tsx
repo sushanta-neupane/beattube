@@ -4,8 +4,9 @@ import PlaylistPlayer from '../components/PlaylistPlayer'
 
 const Page = () => {
   return (
-    <div>
-        <PlaylistPlayer index={1}></PlaylistPlayer>
+    <div className='flex justify-center items-center min-h-screen'>
+        {/* <PlaylistPlayer index={1}></PlaylistPlayer> */}
+        Hold tight, Something cooking...
     </div>
   )
 }

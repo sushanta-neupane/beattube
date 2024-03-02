@@ -20,9 +20,11 @@ import { useSearchParams } from "next/navigation";
 import moment from "moment";
 import Player from "./Player";
 import DownloadBtn from "./DownloadBtn";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PicksType, loadPicks } from "../redux/features/picksSlice";
 import axios from "axios";
+import { RootState } from "../redux/store";
+import { togglePlayer } from "../redux/features/playerSlice";
 
 interface ContentItem {
   id: {
@@ -65,7 +67,9 @@ const Contents = () => {
     PlayingItemType
   >();
   const API_KEY =  process.env.YT_API_KEY as string;
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const isPlayerOpen = useSelector((state: RootState) => state.player.isOpen);
+
+  const [ isOpen, setOpen ] = useState(isPlayerOpen);
   const fetchContents = async () => {
     try {
       console.log(`https://apibeatwave.vercel.app/api?q=${query}&max=8&apikey=${API_KEY}`);
@@ -127,8 +131,11 @@ const Contents = () => {
     }
   }, [dispatch]);
 
+
+
   const handlePlay = (vid: string) => {
     fetchMusic(vid);
+    dispatch(togglePlayer())
   };
 
 
@@ -173,7 +180,6 @@ const Contents = () => {
                         variant="flat"
                         color="secondary"
                         className=""
-                        onPress={onOpen}
                         onClick={() => handlePlay(card?.id?.videoId)}
                       >
                         <FaPlay />
@@ -206,16 +212,12 @@ const Contents = () => {
           </div>
 
           {/* player  */}
-          <div className="Player flex flex-col gap-2">
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
-              <ModalContent>
-                {(onClose) => (
-                  <>
+          <div className="Player  z-50 fixed bottom-0 right-0">
+                    {isPlayerOpen &&(
+
                     <Player current={currentPlaying}  />
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
+                    )}
+               
           </div>
         </>
       )}

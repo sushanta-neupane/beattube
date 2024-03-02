@@ -15,6 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { togglePicks } from "../redux/features/picksSlice";
 import { RootState, AppDispatch } from "../redux/store";
 import toast, { Toaster } from 'react-hot-toast';
+import { TbMaximize, TbVolume, TbVolume2 } from "react-icons/tb";
+import { IoCloseCircle } from "react-icons/io5";
+import { closePlayer, togglePlayer } from "../redux/features/playerSlice";
 
 interface PlayingItemProps {
   current?: PlayingItemType;
@@ -26,11 +29,11 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [liked, setLiked] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(false); // State to track loading status
-
+  const [volume, setVolume] = useState(50); 
   const formatTime = (time: number) => {
     return moment.utc(time * 1000).format("HH:mm:ss");
   };
@@ -91,15 +94,20 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
 
   const handlePicks = () => {
     if (!current) return;
-    dispatch(togglePicks({vid: current.vid,title: current.title, thumbnail : current.thumbnail}));
-    if (!liked){
+    dispatch(togglePicks({ vid: current.vid, title: current.title, thumbnail: current.thumbnail }));
+    if (!liked) {
 
       toast.success("Added to picks");
     }
-    else{
+    else {
 
       toast("Removed from picks");
     }
+  };
+
+
+  const handleClose = () => {
+    dispatch(togglePlayer());
   };
 
   if (!current) return null;
@@ -114,6 +122,14 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
         shadow="sm"
       >
         <CardBody>
+        <div className="flex  justify-between" >
+          <div onClick={handleClose} className=" cursor-pointer">
+
+          <IoCloseCircle size={20} color="#f04a63" />
+          </div>
+          <TbMaximize size={20}  />
+          
+          </div>
           <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
             <div className="relative col-span-6 md:col-span-4">
               <Image
@@ -225,6 +241,22 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
                   <LiaRandomSolid />
                 </Button>
               </div>
+              <Slider
+                aria-label="Volume"
+                size="sm"
+                color="foreground"
+                startContent={<TbVolume2 />}
+                endContent={<TbVolume />}
+                className="max-w-sm"
+                value={volume}
+                defaultValue={volume}
+                onChange={(newValue: any) => {
+                  setVolume(Number(newValue));
+                  if (videoRef.current) {
+                    videoRef.current.volume = Number(newValue / 100);
+                  }
+                }}
+              />
             </div>
           </div>
         </CardBody>
@@ -234,6 +266,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
           src={current?.audioLink}
           className="hidden"
           controls
+          autoPlay
           preload="none"
         ></video>
       </Card>

@@ -19,6 +19,13 @@ export default function App() {
     router.push(`?q=${encodeURIComponent(query)}`)
   }
 
+  const handleEnter = (e:any)=>{
+    if(e.key ===  'Enter'){
+      handleClick()
+    }
+
+  }
+
 
   return (
     <nav className="flex my-2 items-center justify-between">
@@ -42,6 +49,7 @@ export default function App() {
                   "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
               }}
               onChange={handleChange}
+              onKeyDown={handleEnter}
               value={query}
               placeholder="Type to search..."
               size="sm"
