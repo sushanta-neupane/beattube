@@ -52,7 +52,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
 
     const [volume, setVolume] = useState(50); // Initial volume level
 
- 
+
 
     const handleNext = () => {
         if (isSuffle) {
@@ -98,8 +98,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
         const picksData = data.videos[cirIndex];
         try {
             const response = await fetch(
-                `http://localhost:3001/api/${picksData.vid}`
-                // `https://apibeatwave.vercel.app/api/${videoId}`
+                `${process.env.API_URI}/${picksData.vid}`
             );
             if (!response.ok) {
                 throw new Error("Failed to fetch audio link");
@@ -175,7 +174,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
         setLoading(true); // Set loading to true when fetching starts
 
         // Check if the videoId is already in the Redux state
-        const isLiked = data.videos.some((video) => video.vid === currentPlaying.vid);
+        const isLiked = data.videos.some((video) => video.vid === currentPlaying.id);
 
         setLiked(isLiked);
 
@@ -184,7 +183,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
 
     const handlePicks = () => {
         if (!currentPlaying) return;
-        dispatch(togglePicks({ vid: currentPlaying.vid, title: currentPlaying.title, thumbnail: currentPlaying.thumbnail }));
+        dispatch(togglePicks({ vid: currentPlaying.id, title: currentPlaying.title, thumbnail: currentPlaying.thumbnails }));
         if (!liked) {
 
             toast.success("Added to picks");
@@ -209,7 +208,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
                     shadow="sm"
                 >
                     <CardBody>
-                        <div className="  " ><IoCloseCircle  color="red" /></div>
+                        <div className="  " ><IoCloseCircle color="red" /></div>
                         <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
                             <div className="relative col-span-6 md:col-span-4">
                                 <Image
@@ -217,7 +216,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
                                     className="object-cover"
                                     height={400}
                                     shadow="md"
-                                    src={currentPlaying?.thumbnail}
+                                    src={currentPlaying?.thumbnails}
                                     width="100%"
                                 />
                             </div>
@@ -230,10 +229,10 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
                                         </h3>
                                         <p className="text-small text-foreground/80">
                                             {" "}
-                                            {moment(currentPlaying?.publishDate).fromNow()}
+                                            {moment(currentPlaying?.publishTime).fromNow()}
                                         </p>
                                         <h1 className="text-large font-medium mt-2">
-                                            {currentPlaying?.ownerChannelName}
+                                            {currentPlaying?.channelTitle}
                                         </h1>
                                     </div>
                                     <Button
@@ -337,10 +336,10 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
                                     className="max-w-sm"
                                     value={volume}
                                     defaultValue={volume}
-                                    onChange={(newValue:any) => {
+                                    onChange={(newValue: any) => {
                                         setVolume(Number(newValue));
                                         if (videoRef.current) {
-                                            videoRef.current.volume = Number(newValue/100 );
+                                            videoRef.current.volume = Number(newValue / 100);
                                         }
                                     }}
                                 />
@@ -350,7 +349,7 @@ const Player: React.FC<PlayingItemProps> = ({ index }) => {
 
                     <video
                         ref={videoRef}
-                        src={currentPlaying?.audioLink}
+                        src={currentPlaying?.formatAudioHigh}
                         className="hidden"
                         controls
                         preload="none"

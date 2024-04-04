@@ -33,7 +33,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(false); // State to track loading status
-  const [volume, setVolume] = useState(50); 
+  const [volume, setVolume] = useState(50);
   const formatTime = (time: number) => {
     return moment.utc(time * 1000).format("HH:mm:ss");
   };
@@ -85,7 +85,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
     setLoading(true); // Set loading to true when fetching starts
 
     // Check if the videoId is already in the Redux state
-    const isLiked = data.videos.some((video) => video.vid === current.vid);
+    const isLiked = data.videos.some((video) => video.vid === current.id);
 
     setLiked(isLiked);
 
@@ -94,7 +94,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
 
   const handlePicks = () => {
     if (!current) return;
-    dispatch(togglePicks({ vid: current.vid, title: current.title, thumbnail: current.thumbnail }));
+    dispatch(togglePicks({ vid: current.id, title: current.title, thumbnail: current.thumbnails }));
     if (!liked) {
 
       toast.success("Added to picks");
@@ -118,17 +118,17 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
       {loading && <div>Loading...</div>} {/* Show loading indicator */}
       <Card
         isBlurred
-        className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
+        className="border-none bg-background/60 dark:bg-default-100/50 "
         shadow="sm"
       >
         <CardBody>
-        <div className="flex  justify-between" >
-          <div onClick={handleClose} className=" cursor-pointer">
+          <div className="flex  justify-between" >
+            <div onClick={handleClose} className=" cursor-pointer">
 
-          <IoCloseCircle size={20} color="#f04a63" />
-          </div>
-          <TbMaximize size={20}  />
-          
+              <IoCloseCircle size={20} color="#f04a63" />
+            </div>
+            <TbMaximize size={20} />
+
           </div>
           <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
             <div className="relative col-span-6 md:col-span-4">
@@ -137,7 +137,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
                 className="object-cover"
                 height={400}
                 shadow="md"
-                src={current?.thumbnail}
+                src={current?.thumbnails}
                 width="100%"
               />
             </div>
@@ -150,10 +150,10 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
                   </h3>
                   <p className="text-small text-foreground/80">
                     {" "}
-                    {moment(current?.publishDate).fromNow()}
+                    {current.publishTime}
                   </p>
                   <h1 className="text-large font-medium mt-2">
-                    {current?.ownerChannelName}
+                    {current?.channelTitle}
                   </h1>
                 </div>
                 <Button
@@ -263,7 +263,7 @@ const Player: React.FC<PlayingItemProps> = ({ current }) => {
 
         <video
           ref={videoRef}
-          src={current?.audioLink}
+          src={current.formatAudioHigh}
           className="hidden"
           controls
           autoPlay

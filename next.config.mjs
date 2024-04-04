@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+  reactStrictMode: true,
   env: {
-    YT_API_KEY: process.env.YT_API_KEY,
-  }
+    API_URI: process.env.API_URI,
+  },
 };
 
 export default nextConfig;

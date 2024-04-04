@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { StoreProvider } from "./redux/StoreProvider";
+import { StoreProvider } from "../redux/StoreProvider";
 
 export const metadata: Metadata = {
   title: "beatTube",
-  description:  `A platform for downloading and listening music`,
+  description: `A platform for downloading and listening music`,
 };
 
 export default function RootLayout({
@@ -16,10 +16,10 @@ export default function RootLayout({
     <html lang="en">
 
       <body >
-      <StoreProvider>
-        {children}
-      </StoreProvider>
-        </body>
+        <StoreProvider>
+          {children}
+        </StoreProvider>
+      </body>
     </html>
   );
 }

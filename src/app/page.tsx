@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import Navbar from "./components/Navbar";
-import Contents from "./components/Contents";
+import Navbar from "../components/Navbar";
+import Contents from "../components/Contents";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
-import LoadSpinner from "./components/LoadSpinner";
+import LoadSpinner from "../components/LoadSpinner";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
 
           <Navbar />
           <Suspense fallback={<LoadSpinner label="Fetching..." />}>
-          <Contents/>
+            <Contents />
           </Suspense>
         </main>
       </NextUIProvider>
